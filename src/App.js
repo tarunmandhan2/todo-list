@@ -6,14 +6,17 @@ export default function App() {
   const [text, setText] = useState("");
   // console.log(text);
   const removeItem = (i) => {
-    // items.splice(i, 1);
-    // console.log(items, i);
-    // setItems([...items]);
-
     const copy = [...items];
     copy.splice(i, 1);
     setItems(copy);
   };
+
+  const toggleItem = (i) => {
+    const copy = [...items];
+    copy[i].isComplete = !copy[i].isComplete;
+    setItems(copy);
+  };
+
   return (
     <div className="App">
       <input
@@ -27,8 +30,10 @@ export default function App() {
       />
       <button
         onClick={() => {
-          setItems([...items, text]);
-          setText("");
+          if (text) {
+            setItems([...items, { text, isComplete: false }]);
+            setText("");
+          }
         }}
       >
         add
@@ -37,8 +42,16 @@ export default function App() {
       {items.map((item, i) => {
         return (
           <ul>
-            <li key={i}>
-              {item}
+            <li
+              key={i}
+              style={{
+                textDecoration: item.isComplete ? "line-through" : "none",
+              }}
+            >
+              {item.text}
+              <button onClick={() => toggleItem(i)}>
+                {item.isComplete ? "completed" : "mark"}
+              </button>
               <button onClick={() => removeItem(i)}>remove</button>
             </li>
           </ul>
